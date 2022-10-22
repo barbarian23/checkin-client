@@ -1,11 +1,4 @@
 {
-  "expo": {
-    "name": "checkin-client",
-    "slug": "checkin-client",
-    "version": "1.0.0",
-    "assetBundlePatterns": [
-      "**/*"
-    ]
-  },
-  "name": "checkin-client"
+  "name": "TestSmartLock",
+  "displayName": "TestSmartLock"
 }
