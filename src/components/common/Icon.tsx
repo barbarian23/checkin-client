@@ -11,9 +11,8 @@ export type IPropsIcon = {
 
 const Icon: React.FC<IPropsIcon> = ({name, ...props}) => {
   const S = SVGs[name];
-  return S ? (
-    <IconNative {...props} as={<S />} />
-  ) : (
+  console.log('name image', name);
+  return (
     // <IconNative {...props} as={<S fill={props.color || 'white'} />} />
     <IconNative name={name} {...props} />
   );

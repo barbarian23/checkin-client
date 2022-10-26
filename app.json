@@ -1,4 +1,10 @@
 {
   "name": "CheckinClient",
-  "displayName": "CheckinClient"
+  "displayName": "CheckinClient",
+  "expo": {
+    "packagerOpts": {
+      "config": "metro.config.js",
+      "sourceExts": ["js", "jsx", "json", "wasm", "svg"]
+    }
+  }
 }

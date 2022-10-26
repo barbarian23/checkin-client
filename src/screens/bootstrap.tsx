@@ -17,28 +17,13 @@ const App = () => {
 
   return (
     <NavigationContainer ref={navigationRef}>
-      <Stack.Navigator initialRouteName="">
+      <Stack.Navigator initialRouteName="Login">
         {isLoading ? (
-          <Stack.Screen
-            name="Splash"
-            component={Splash}
-            options={{headerShown: false}}
-          />
-        ) : true ? (
-          <>
-            <Stack.Screen
-              name="Login"
-              component={Login}
-              options={{headerShown: false}}
-            />
-          </>
+          <Stack.Screen name="Splash" component={Splash} />
         ) : (
           <>
-            <Stack.Screen
-              name="HomeScreen"
-              component={Home}
-              options={{headerShown: false}}
-            />
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Home" component={Home} />
           </>
         )}
       </Stack.Navigator>
