@@ -2,13 +2,12 @@
 import axios from 'axios';
 import {t} from 'i18next';
 import _ from 'lodash';
-import Config from 'react-native-config';
 
 import {queryClient} from '@/App';
 import * as AsyncStorage from '@/utils/stores/AsyncStorage';
 
 const axiosClient = axios.create({
-  baseURL: Config.API_URL,
+  baseURL: 'http://103.75.184.126:8080/api/pos/public/api-client/',
   timeout: 60000,
   headers: {
     'Content-Type': 'application/json',
@@ -21,10 +20,8 @@ axiosClient.interceptors.request.use(async (request: any) => {
     'background: #FFA813; color: #fff',
     request,
   );
-  const authToken = await AsyncStorage.get('Token');
-  if (authToken) {
-    request.headers.common.Authorization = `Bearer ${authToken}`;
-  }
+  request.headers.tenant = 'STORE1';
+  request.headers.branchCode = '10e0633b-9f1c-438e-95e8-a86a7a2499fc';
   return request;
 });
 

@@ -1,4 +1,5 @@
 {
-  "login_phone": "Số điện thoại",
-  "select_staff": "Select Staff"
+  "title_input_phone": "Phone number",
+  "select_staff": "Select Staff",
+  "btn_check": "Check"
 }
