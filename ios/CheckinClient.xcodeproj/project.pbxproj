@@ -504,6 +504,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = app_test_akuvox_dev;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 2;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -531,6 +532,7 @@
 				PRODUCT_NAME = CheckinClient;
 				PROVISIONING_PROFILE_SPECIFIER = app_test_akuvox_dev;
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 2;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

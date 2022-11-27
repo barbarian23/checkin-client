@@ -1,11 +1,11 @@
-import {Text, VStack, Input, Button, useToast} from 'native-base';
-import React, {useState} from 'react';
+import {VStack, Input, Button, useToast, Image} from 'native-base';
+import React, {useEffect, useState} from 'react';
 import {withTranslation} from 'react-i18next';
 import {ScaledSheet} from 'react-native-size-matters';
-import {ImageBackground, Linking} from 'react-native';
+import {ImageBackground, Text} from 'react-native';
 import {useQuery} from 'react-query';
 import Colors from '@/themes/Colors';
-import {checkPhone} from '@/utils/services/api/myAPI';
+import {checkIsPhone} from '@/utils/services/api/myAPI';
 
 type IPropsLogin = {
   navigation: any;
@@ -13,43 +13,53 @@ type IPropsLogin = {
 
 const Login: React.FC<IPropsLogin> = ({t, navigation}) => {
   const [phone, setPhone] = useState('');
-  const [enabledAPI, setEnabledAPI] = useState(false);
-  const url = 'https://www.google.com/';
+  const [enabledAPIIsPhone, setEnabledAPIIsPhone] = useState(false);
   const toast = useToast();
+  const [disabledButton, setDisabledButton] = useState(true);
 
-  useQuery(['getDataInfo'], () => checkPhone(phone), {
-    enabled: enabledAPI,
+  useQuery(['checkIsPhone'], () => checkIsPhone(phone), {
+    enabled: enabledAPIIsPhone,
     onSuccess: (responseData: any) => {
-      console.log('success data: ', responseData);
-      navigation.navigate('Home', {responseCheckPhone: responseData});
-      setEnabledAPI(false);
+      if (responseData === null) {
+        toast.show({title: 'Please enter customer information!'});
+        navigation.navigate('Home', {
+          isCheckCustomer: false,
+          phone: phone,
+          name: '',
+          birthday: '',
+        });
+      } else {
+        navigation.navigate('Home', {
+          isCheckCustomer: true,
+          phone: phone,
+          name: responseData?.fullName,
+          birthday: responseData?.dob,
+        });
+      }
+      setEnabledAPIIsPhone(false);
     },
     onError: e => {
-      console.log('error: ', e);
-      toast.show({
-        title:
-          'Phone number is not registered, please go to website to register for service',
-      });
-      setEnabledAPI(false);
-      linkWeb();
+      console.log('Check Phone Error: ', e);
+      setEnabledAPIIsPhone(false);
+      toast.show({title: 'Connect Error!!'});
     },
   });
 
-  const handleCheckin = () => {
-    setEnabledAPI(true);
-  };
-
-  const linkWeb = async () => {
-    const supported = await Linking.canOpenURL(url);
-
-    if (supported) {
-      await Linking.openURL(url);
+  // Set Disable Button
+  useEffect(() => {
+    if (phone.length === 10) {
+      setDisabledButton(false);
     } else {
-      toast.show({title: `Don't know how to open this URL: ${url}`});
+      setDisabledButton(true);
     }
+  }, [phone]);
+
+  const handleCheckin = () => {
+    setEnabledAPIIsPhone(true);
   };
 
   const sourceImgBg = require('@/assets/images/bg_login.jpg');
+  const sourceLogo = require('@/assets/images/logo.jpg');
 
   return (
     <ImageBackground
@@ -57,8 +67,12 @@ const Login: React.FC<IPropsLogin> = ({t, navigation}) => {
       source={sourceImgBg}
       resizeMode="cover">
       <VStack style={styles.container}>
-        <VStack style={styles.view_content} space={4}>
-          <Text style={styles.title}>{t('title_input_phone')}</Text>
+        <VStack style={styles.view_content} space={8}>
+          <VStack>
+            <Text style={styles.title}>Welcome to</Text>
+            <Text style={styles.title}>Texas Nail Bar</Text>
+          </VStack>
+
           <Input
             style={styles.input}
             placeholder="Input phone number"
@@ -70,7 +84,10 @@ const Login: React.FC<IPropsLogin> = ({t, navigation}) => {
             borderColor={Colors.primary.lightGreen800}
             onChangeText={(text: string) => setPhone(text)}
           />
-          <Button style={styles.button} onPress={handleCheckin}>
+          <Button
+            style={styles.button}
+            onPress={handleCheckin}
+            isDisabled={disabledButton}>
             <Text style={styles.text_button}>{t('btn_check')}</Text>
           </Button>
         </VStack>
@@ -86,42 +103,51 @@ const styles = ScaledSheet.create({
     width: '100%',
     height: '100%',
     backgroundColor: 'rgba(52, 52, 52, 0.4)',
-    // justifyContent: 'center',
-    paddingTop: 80,
-    paddingHorizontal: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   image_bg: {
     width: '100%',
     height: '100%',
   },
+  img_logo: {
+    flex: 1,
+    alignSelf: 'center',
+    height: '10@vs',
+  },
   view_content: {
-    backgroundColor: 'rgba(255, 255, 255, 0.6)',
-    paddingHorizontal: 40,
-    paddingVertical: 40,
-    borderRadius: 30,
+    backgroundColor: 'rgba(52, 52, 52, 0.4)',
+    paddingHorizontal: '40@vs',
+    paddingVertical: '20@vs',
+    borderRadius: '15@vs',
   },
   title: {
     width: '100%',
     textAlign: 'center',
     fontWeight: '700',
-    fontSize: 22,
-    color: Colors.primary.lightGreen900,
+    fontSize: '40@s',
+    color: Colors.primary.whiteGreen,
   },
   input: {
-    color: Colors.primary.lightGreen800,
+    color: Colors.primary.whiteGreen,
     textAlign: 'center',
-    fontSize: 22,
+    fontSize: '28@s',
     fontWeight: '500',
   },
   button: {
-    marginTop: 20,
-    borderRadius: 20,
+    height: '70@vs',
+    marginTop: '20@vs',
+    borderRadius: '20@s',
+    paddingVertical: 0,
     backgroundColor: Colors.primary.lightGreen700,
   },
   text_button: {
+    height: '100%',
+    textAlignVertical: 'center',
+    alignItems: 'center',
     color: 'white',
     textAlign: 'center',
     fontWeight: '700',
-    fontSize: 18,
+    fontSize: '30@s',
   },
 });

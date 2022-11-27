@@ -1,59 +1,105 @@
-import {Button, HStack, Text, VStack, useSafeArea} from 'native-base';
+import {
+  Button,
+  HStack,
+  VStack,
+  useSafeArea,
+  Input,
+  useToast,
+  ScrollView,
+} from 'native-base';
 import React, {useState, useCallback} from 'react';
 import {withTranslation} from 'react-i18next';
-import SelectTopicsModal from './SelectTopicsModal';
 import {ScaledSheet} from 'react-native-size-matters';
 import Colors from '@/themes/Colors';
 import Icon from '@/components/common/Icon';
-import {TouchableOpacity} from 'react-native';
+import {TouchableOpacity, Text} from 'react-native';
+import {checkPhone, checkin} from '@/utils/services/api/myAPI';
+import {useQuery} from 'react-query';
 
 type IPropsHome = {
   route: any;
   navigation: any;
 } & IPropsI18n;
 
-const data = {
-  name: 'Nguyen Thi A',
-  phone: '0987654321',
-  timeOrder: '01/11/2022 9:30:10 AM',
-  arrivalTime: '02/11/2022 9:30:10 AM',
-  staff: 'Nhan vien A',
-  service: ['nail, hair'],
-};
-
-const dataStaffsFake = [
-  {
-    id: '1',
-    name: 'Nguyen Thi H',
-  },
-  {
-    id: '2',
-    name: 'Tran Van B',
-  },
-  {
-    id: '3',
-    name: 'Tran Van D',
-  },
-  {
-    id: '4',
-    name: 'Tran Thi A',
-  },
-];
-
 const Home: React.FC<IPropsHome> = ({t, navigation, route}) => {
-  const {responseCheckPhone} = route?.params;
-  console.log('data Check: ', responseCheckPhone);
+  const {isCheckCustomer} = route?.params;
+  const {phone} = route?.params;
+  const {name} = route?.params;
+  const {birthday} = route?.params;
+  const toast = useToast();
+  const [dataBooking, setDataBooking] = useState(new Array());
+  const [myName, setMyName] = useState(name);
+  const [myBirthday, setMyBirthday] = useState(birthday);
+
+  useQuery(['getDataInfo'], () => checkPhone(phone), {
+    onSuccess: (responseData: any) => {
+      console.log('success data booking: ', responseData);
+      if (responseData?.list.length < 1) {
+        return;
+      }
+      const listServices = responseData?.list[0].bookingDetails;
+      var listServiceDetail = new Array();
+      listServices.map((item: any) => {
+        listServiceDetail.push(item?.serviceDetail);
+      });
+      console.log('list dataa: ', listServiceDetail);
+      setDataBooking(listServiceDetail);
+    },
+    onError: e => {
+      console.log('Get infor booking: ', e);
+      toast.show({
+        title: 'Phone number is not booking, please booking',
+      });
+    },
+  });
+
   const safeAreaProps = useSafeArea({
     safeAreaTop: true,
     pt: 3,
   });
 
+  const renderItem = useCallback(
+    (item: any) => (
+      <Text key={item.id} style={styles.value}>
+        {item.name}
+      </Text>
+    ),
+    [],
+  );
+
   const handleBack = useCallback(() => {
     navigation.goBack();
   }, [navigation]);
 
-  const [showStaffModal, setShowStaffModal] = useState(false);
-  const [selectedStaff, setSelectedStaff] = useState(dataStaffsFake[0]);
+  const handleSelectServices = () => {
+    navigation.navigate('SelectServices', {
+      listSelected: dataBooking,
+      setListSelected: setDataBooking,
+      phone: phone,
+    });
+  };
+
+  const handleCheckin = async () => {
+    var paramsService = new Array();
+    dataBooking.map((item: any) => {
+      paramsService.push({serviceDetailId: item?.id});
+    });
+    console.log('paramsService: ', paramsService);
+    try {
+      const res = await checkin({
+        customerName: myName,
+        customerPhone: phone,
+        dob: myBirthday,
+        serviceDetailInternals: paramsService,
+      });
+      toast.show({title: 'Check in success!'});
+      // TODO: navigate man hinh show thong tin
+      navigation.navigate('Login');
+    } catch (e) {
+      console.log('Check in Error', e);
+      toast.show({title: 'Server Connect Error! Please try again!'});
+    }
+  };
 
   return (
     <VStack style={styles.contenter} {...safeAreaProps}>
@@ -61,67 +107,77 @@ const Home: React.FC<IPropsHome> = ({t, navigation, route}) => {
         <TouchableOpacity style={styles.touchableOpacity} onPress={handleBack}>
           <Icon name="arrow_left" />
         </TouchableOpacity>
-        <Text style={styles.titleHeader}>Thông tin đặt lịch</Text>
+        <Text style={styles.titleHeader}>Booking Information</Text>
       </HStack>
-      <HStack style={styles.view_info}>
-        <VStack style={styles.viewTitle} space={3}>
-          <Text style={styles.title}>Name:</Text>
-          <Text style={styles.title}>Phone number:</Text>
-          <Text style={styles.title}>Time order:</Text>
-          <Text style={styles.title}>Arrival time:</Text>
-        </VStack>
-        <VStack style={styles.viewValue} space={3}>
-          <Text style={styles.value}>{data?.name}</Text>
-          <Text style={styles.value}>{data.phone}</Text>
-          <Text style={styles.value}>{data.timeOrder}</Text>
-          <Text style={styles.value}>{data.arrivalTime}</Text>
-        </VStack>
-      </HStack>
-
-      <HStack style={styles.viewSelectStaff}>
-        <Text style={[styles.title, styles.viewTitle]}>Staff:</Text>
-        <HStack style={styles.viewValueStaff}>
-          <Text style={styles.value}>{selectedStaff.name}</Text>
-          <TouchableOpacity
-            style={styles.touchableOpacity}
-            onPress={() => setShowStaffModal(true)}>
-            <Icon name="arrow_right" />
-          </TouchableOpacity>
-        </HStack>
-      </HStack>
-
-      <HStack style={styles.viewSelectStaff}>
-        <Text style={[styles.title, styles.viewTitle]}>Service:</Text>
-        <VStack style={{height: 80}}>
-          <HStack style={styles.viewValueStaff}>
-            <Text style={styles.value}>{selectedStaff.name}</Text>
-            <TouchableOpacity
-              style={styles.touchableOpacity}
-              onPress={() => setShowStaffModal(true)}>
-              <Icon name="arrow_right" />
-            </TouchableOpacity>
+      {/* Content */}
+      {/* <ScrollView> */}
+      <HStack space={8} style={{flex: 1, marginBottom: 30}}>
+        <VStack style={styles.viewLeft}>
+          <Text style={styles.textTitle}>Customer Information</Text>
+          <HStack style={styles.view_info}>
+            <VStack style={styles.viewTitle} space={8}>
+              <Text style={styles.title}>Name:</Text>
+              <Text style={styles.title}>Phone number:</Text>
+              <Text style={styles.title}>Date of birth:</Text>
+            </VStack>
+            <VStack style={styles.viewValue} space={3}>
+              <Input
+                style={styles.value}
+                placeholder="Input name"
+                size="xl"
+                value={myName}
+                variant="underlined"
+                focusOutlineColor={Colors.primary.lightGreen800}
+                borderColor={Colors.primary.lightGreen800}
+                isDisabled={isCheckCustomer}
+                onChangeText={(text: string) => setMyName(text)}
+              />
+              <Input
+                style={styles.value}
+                placeholder="Input phone number"
+                size="xl"
+                value={phone}
+                keyboardType="phone-pad"
+                maxLength={10}
+                variant="underlined"
+                focusOutlineColor={Colors.primary.lightGreen800}
+                borderColor={Colors.primary.lightGreen800}
+                isDisabled={isCheckCustomer}
+                // onChangeText={(text: string) => setPhone(text)}
+              />
+              <Input
+                style={styles.value}
+                placeholder="Input date of birth"
+                size="xl"
+                value={myBirthday}
+                variant="underlined"
+                focusOutlineColor={Colors.primary.lightGreen800}
+                borderColor={Colors.primary.lightGreen800}
+                isDisabled={isCheckCustomer}
+                onChangeText={(text: string) => setMyBirthday(text)}
+              />
+            </VStack>
           </HStack>
-          <HStack style={styles.viewValueStaff}>
-            <Text style={styles.value}>{selectedStaff.name}</Text>
-            <TouchableOpacity
-              style={styles.touchableOpacity}
-              onPress={() => setShowStaffModal(true)}>
-              <Icon name="arrow_right" />
-            </TouchableOpacity>
+          <Button style={styles.button} onPress={handleCheckin}>
+            <Text style={styles.text_button}>Checkin</Text>
+          </Button>
+        </VStack>
+
+        <VStack style={styles.viewRight}>
+          <HStack>
+            <Text style={[styles.textTitle, {flex: 1}]}>Service</Text>
+            <Button style={styles.buttonEdit} onPress={handleSelectServices}>
+              <Text style={styles.textButtonEdit}>Edit</Text>
+            </Button>
           </HStack>
+          <VStack style={styles.viewSelectService}>
+            <ScrollView>
+              {dataBooking.map((item, index) => renderItem(item, index))}
+            </ScrollView>
+          </VStack>
         </VStack>
       </HStack>
-
-      <SelectTopicsModal
-        staffs={dataStaffsFake} // TODO: Co API thay dataFake thanh topics
-        isOpen={showStaffModal}
-        onClose={() => setShowStaffModal(false)}
-        value={selectedStaff}
-        onSelect={(topic: any) => {
-          setSelectedStaff(topic);
-          setShowStaffModal(false);
-        }}
-      />
+      {/* </ScrollView> */}
     </VStack>
   );
 };
@@ -130,59 +186,123 @@ export default withTranslation()(Home);
 
 const styles = ScaledSheet.create({
   contenter: {
-    backgroundColor: Colors.primary.whiteGreen,
+    backgroundColor: Colors.primary.lightGreen100,
     width: '100%',
     height: '100%',
-    paddingHorizontal: 16,
+    paddingHorizontal: '15@vs',
+    paddingVertical: '20@vs',
   },
   titleHeader: {
     width: '85%',
     fontWeight: '700',
-    fontSize: 20,
+    fontSize: '24@s',
     color: Colors.primary.lightGreen900,
-    marginBottom: 20,
+    marginBottom: '18@vs',
     textAlign: 'center',
   },
   title: {
     fontWeight: '400',
-    fontSize: 15,
+    fontSize: '14@s',
     color: Colors.primary.whiteGreen,
   },
   value: {
-    fontWeight: '700',
-    fontSize: 16,
+    fontWeight: '600',
+    fontSize: '14@s',
     color: Colors.primary.whiteGreen,
   },
   viewTitle: {
-    width: '40%',
+    width: '45%',
   },
   viewValue: {
-    width: '60%',
+    flex: 1,
   },
   touchableOpacity: {
-    paddingHorizontal: 10,
+    paddingHorizontal: '10@vs',
   },
   view_info: {
+    flex: 1,
     backgroundColor: Colors.primary.lightGreen700,
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-    borderRadius: 12,
+    marginTop: '10@vs',
+    paddingHorizontal: '20@vs',
+    paddingVertical: '20@vs',
+    borderRadius: '12@s',
+  },
+  viewLeft: {
+    width: '60%',
+    height: '100%',
   },
   viewSelectStaff: {
     flexDirection: 'row',
-    paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingHorizontal: '20@vs',
+    paddingVertical: '20@vs',
     backgroundColor: Colors.primary.lightGreen900,
     shadowColor: Colors.primary.lightGreen800,
     shadowOffset: {width: 0, height: 1},
     shadowOpacity: 1,
-    shadowRadius: 12,
+    shadowRadius: '12@s',
     elevation: 5,
-    borderRadius: 12,
-    marginTop: 30,
+    borderRadius: '12@s',
+    marginTop: '30@vs',
+    marginBottom: '20@vs',
   },
   viewValueStaff: {
     justifyContent: 'space-between',
     flex: 1,
+  },
+  viewSelectService: {
+    flex: 1,
+    height: '100%',
+    paddingHorizontal: '20@vs',
+    paddingVertical: '20@vs',
+    backgroundColor: Colors.primary.lightGreen900,
+    shadowColor: Colors.primary.lightGreen800,
+    shadowOffset: {width: 0, height: 1},
+    shadowOpacity: 1,
+    shadowRadius: '12@s',
+    elevation: 5,
+    borderRadius: '12@s',
+  },
+  viewRight: {
+    flex: 1,
+  },
+  button: {
+    width: '100%',
+    height: '60@vs',
+    marginTop: '30@vs',
+    borderRadius: '20@vs',
+    paddingVertical: 0,
+    alignSelf: 'center',
+    backgroundColor: Colors.primary.lightGreen700,
+  },
+  text_button: {
+    height: '100%',
+    textAlignVertical: 'center',
+    alignItems: 'center',
+    color: 'white',
+    textAlign: 'center',
+    fontWeight: '700',
+    fontSize: '24@s',
+  },
+  textTitle: {
+    fontWeight: '600',
+    fontSize: '20@s',
+    color: Colors.primary.lightGreen900,
+    marginBottom: '10@vs',
+  },
+  buttonEdit: {
+    borderRadius: '20@s',
+    paddingVertical: 0,
+    alignSelf: 'center',
+    marginBottom: '10@vs',
+    backgroundColor: Colors.primary.lightGreen700,
+  },
+  textButtonEdit: {
+    textAlignVertical: 'center',
+    alignItems: 'center',
+    color: 'white',
+    textAlign: 'center',
+    fontWeight: '600',
+    fontSize: '18@s',
+    marginHorizontal: '20@vs',
   },
 });

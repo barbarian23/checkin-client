@@ -7,7 +7,7 @@ import {queryClient} from '@/App';
 import * as AsyncStorage from '@/utils/stores/AsyncStorage';
 
 const axiosClient = axios.create({
-  baseURL: 'http://103.75.184.126:8080/api/pos/public/api-client/',
+  baseURL: 'http://54.169.55.194/api/pos/public/api-client/',
   timeout: 60000,
   headers: {
     'Content-Type': 'application/json',
