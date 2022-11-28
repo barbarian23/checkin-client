@@ -8,6 +8,7 @@ import {navigationRef} from '@/utils/services/navigation';
 
 import Login from './Login';
 import Home from './Home';
+import SelectServices from './SelectServices';
 
 const Stack = createNativeStackNavigator();
 
@@ -30,6 +31,11 @@ const App = () => {
             <Stack.Screen
               name="Home"
               component={Home}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="SelectServices"
+              component={SelectServices}
               options={{headerShown: false}}
             />
           </>

@@ -75,7 +75,6 @@ const Home: React.FC<IPropsHome> = ({t, navigation, route}) => {
     navigation.navigate('SelectServices', {
       listSelected: dataBooking,
       setListSelected: setDataBooking,
-      phone: phone,
     });
   };
 
@@ -197,7 +196,7 @@ const styles = ScaledSheet.create({
     fontWeight: '700',
     fontSize: '24@s',
     color: Colors.primary.lightGreen900,
-    marginBottom: '18@vs',
+    marginBottom: '16@vs',
     textAlign: 'center',
   },
   title: {
