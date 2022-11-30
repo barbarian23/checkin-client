@@ -62,37 +62,38 @@ const Login: React.FC<IPropsLogin> = ({t, navigation}) => {
   const sourceLogo = require('@/assets/images/logo.jpg');
 
   return (
-    <ImageBackground
-      imageStyle={styles.image_bg}
-      source={sourceImgBg}
-      resizeMode="cover">
-      <VStack style={styles.container}>
-        <VStack style={styles.view_content} space={8}>
-          <VStack>
-            <Text style={styles.title}>Welcome to</Text>
-            <Text style={styles.title}>Texas Nail Bar</Text>
-          </VStack>
-
-          <Input
-            style={styles.input}
-            placeholder="Input phone number"
-            size="xl"
-            variant="underlined"
-            keyboardType="phone-pad"
-            maxLength={10}
-            focusOutlineColor={Colors.primary.lightGreen800}
-            borderColor={Colors.primary.lightGreen800}
-            onChangeText={(text: string) => setPhone(text)}
-          />
-          <Button
-            style={styles.button}
-            onPress={handleCheckin}
-            isDisabled={disabledButton}>
-            <Text style={styles.text_button}>{t('btn_check')}</Text>
-          </Button>
+    // <ImageBackground
+    //   imageStyle={styles.image_bg}
+    //   source={sourceImgBg}
+    //   resizeMode="cover">
+    <VStack style={styles.container}>
+      <VStack style={styles.view_content} space={8}>
+        <VStack>
+          <Text style={styles.title}>Welcome to</Text>
+          <Text style={styles.title}>6FigurePOS</Text>
         </VStack>
+
+        <Input
+          style={styles.input}
+          placeholder="Input phone number"
+          size="xl"
+          variant="underlined"
+          // value="(817)966-6369"
+          keyboardType="phone-pad"
+          maxLength={10}
+          focusOutlineColor={Colors.primary.lightGreen800}
+          borderColor={Colors.primary.lightGreen800}
+          onChangeText={(text: string) => setPhone(text)}
+        />
+        <Button
+          style={styles.button}
+          onPress={handleCheckin}
+          isDisabled={disabledButton}>
+          <Text style={styles.text_button}>{t('btn_check')}</Text>
+        </Button>
       </VStack>
-    </ImageBackground>
+    </VStack>
+    // </ImageBackground>
   );
 };
 
@@ -102,7 +103,8 @@ const styles = ScaledSheet.create({
   container: {
     width: '100%',
     height: '100%',
-    backgroundColor: 'rgba(52, 52, 52, 0.4)',
+    backgroundColor: 'black',
+    // backgroundColor: 'rgba(52, 52, 52, 0.4)',
     alignItems: 'center',
     justifyContent: 'center',
   },

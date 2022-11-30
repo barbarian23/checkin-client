@@ -5,9 +5,10 @@ import _ from 'lodash';
 
 import {queryClient} from '@/App';
 import * as AsyncStorage from '@/utils/stores/AsyncStorage';
+import {BRANCH_CODE, TEN_ANT, HOST} from './Constants';
 
 const axiosClient = axios.create({
-  baseURL: 'http://54.169.55.194/api/pos/public/api-client/',
+  baseURL: 'http://' + HOST + '/api/pos/public/api-client/',
   timeout: 60000,
   headers: {
     'Content-Type': 'application/json',
@@ -20,8 +21,8 @@ axiosClient.interceptors.request.use(async (request: any) => {
     'background: #FFA813; color: #fff',
     request,
   );
-  request.headers.tenant = 'STORE1';
-  request.headers.branchCode = '10e0633b-9f1c-438e-95e8-a86a7a2499fc';
+  request.headers.tenant = TEN_ANT;
+  request.headers.branchCode = BRANCH_CODE;
   return request;
 });
 

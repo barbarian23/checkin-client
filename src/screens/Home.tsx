@@ -39,6 +39,9 @@ const Home: React.FC<IPropsHome> = ({t, navigation, route}) => {
       }
       const listServices = responseData?.list[0].bookingDetails;
       var listServiceDetail = new Array();
+      if (listServices === undefined) {
+        return;
+      }
       listServices.map((item: any) => {
         listServiceDetail.push(item?.serviceDetail);
       });
@@ -136,6 +139,7 @@ const Home: React.FC<IPropsHome> = ({t, navigation, route}) => {
                 placeholder="Input phone number"
                 size="xl"
                 value={phone}
+                // value="(817)966-6369"
                 keyboardType="phone-pad"
                 maxLength={10}
                 variant="underlined"

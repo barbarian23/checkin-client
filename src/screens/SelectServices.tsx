@@ -6,8 +6,8 @@ import {
   Divider,
   View,
   useToast,
-  Checkbox,
 } from 'native-base';
+import {Checkbox} from 'react-native-ui-lib';
 import React, {useState, useCallback, useEffect} from 'react';
 import {withTranslation} from 'react-i18next';
 import {ScaledSheet} from 'react-native-size-matters';
@@ -17,6 +17,7 @@ import {TouchableOpacity, Text} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {getService} from '@/utils/services/api/myAPI';
 import {useQuery} from 'react-query';
+import {BRANCH_CODE} from '@/utils/services/api/Constants';
 
 type IProps = {
   route: any;
@@ -29,31 +30,43 @@ const SelectServices: React.FC<IProps> = ({t, navigation, route}) => {
   const toast = useToast();
   console.log('data book Services: ', listSelected);
   const [data, setData] = useState([]);
-  const [listServiceDetail, setListServiceDetail] = useState([]);
   const [indexSelectService, setIndexSelectService] = useState(0);
-  const [listSelectedServiceDetail, setSelectedListServiceDetail] =
-    useState(listSelected);
+  const [listSelectedServiceDetail, setListSelectedServiceDetail] = useState([
+    ...listSelected,
+  ]);
 
-  useQuery(
-    ['getService'],
-    () => getService('10e0633b-9f1c-438e-95e8-a86a7a2499fc'),
-    {
-      onSuccess: (responseData: any) => {
-        console.log('success data services: ', responseData?.list);
-        if (responseData?.list.length < 1) {
-          return;
-        }
+  useQuery(['getService'], () => getService(BRANCH_CODE), {
+    onSuccess: (responseData: any) => {
+      console.log('success data services: ', responseData?.list);
+      if (responseData?.list.length < 1) {
+        return;
+      }
+
+      if (listSelected.length <= 0) {
         setData(responseData?.list);
-        setListServiceDetail(responseData?.list[0].serviceDetails);
-      },
-      onError: e => {
-        console.log('Get list services error: ', e);
-        toast.show({
-          title: 'Server Connect Error! Please try again!',
+        return;
+      }
+
+      var listServiceCoppy = [...responseData?.list];
+      responseData?.list.map((item: any, index: number) => {
+        item?.serviceDetails.map((itemDetail: any, indexDetail: number) => {
+          listSelected.map((itemSelected: any) => {
+            if (itemDetail?.id === itemSelected?.id) {
+              listServiceCoppy[index].serviceDetails[indexDetail].isSelect =
+                true;
+            }
+          });
         });
-      },
+      });
+      setData(listServiceCoppy);
     },
-  );
+    onError: e => {
+      console.log('Get list services error: ', e);
+      toast.show({
+        title: 'Server Connect Error! Please try again!',
+      });
+    },
+  });
 
   const safeAreaProps = useSafeArea({
     safeAreaTop: true,
@@ -66,7 +79,6 @@ const SelectServices: React.FC<IProps> = ({t, navigation, route}) => {
         <TouchableOpacity
           onPress={() => {
             setIndexSelectService(index);
-            setListServiceDetail(item.serviceDetails);
           }}>
           <Text
             style={
@@ -87,43 +99,54 @@ const SelectServices: React.FC<IProps> = ({t, navigation, route}) => {
 
   const onChangeCheckbox = useCallback(
     (value: boolean, index: number) => {
-      if (data[indexSelectService].serviceDetails[index]?.isSelect) {
-        data[indexSelectService].serviceDetails[index].isSelect = false;
-        const indexDelete = listSelectedServiceDetail.findIndex(
+      if (data.length <= 0) {
+        return;
+      }
+
+      const dataCoppy = [...data];
+      const listSelectedDetailCoppy = [...listSelectedServiceDetail];
+
+      if (value === false) {
+        dataCoppy[indexSelectService].serviceDetails[index].isSelect = false;
+
+        const indexDelete = listSelectedDetailCoppy.findIndex(
           (i: any) =>
             i.id === data[indexSelectService].serviceDetails[index].id,
         );
-        console.log('------------------index tesst delete', indexDelete);
         if (indexDelete > -1) {
-          delete listSelectedServiceDetail[indexDelete];
+          listSelectedDetailCoppy.splice(indexDelete, 1);
         }
       } else {
-        console.log('index tesst', indexSelectService);
-        data[indexSelectService].serviceDetails[index].isSelect = true;
-        listSelectedServiceDetail.push(
+        dataCoppy[indexSelectService].serviceDetails[index].isSelect = true;
+        listSelectedDetailCoppy.push(
           data[indexSelectService].serviceDetails[index],
         );
-        setSelectedListServiceDetail(listSelectedServiceDetail);
       }
+
+      setListSelectedServiceDetail(listSelectedDetailCoppy);
+      setData(dataCoppy);
     },
-    [indexSelectService, data, listServiceDetail],
+    [data, listSelectedServiceDetail, indexSelectService],
   );
+
+  useEffect(() => {
+    console.log('listSelectedServiceDetail', listSelectedServiceDetail);
+  }, [listSelectedServiceDetail]);
 
   const renderItemServiceDetail = useCallback(
     (item: any, index: number) => (
       <HStack key={item.id} style={styles.checkboxContainer} space={5}>
         <Checkbox
-          size="lg"
-          colorScheme="orange"
-          onChange={value => onChangeCheckbox(value, index)}
-          value={item.name}
+          size={34}
+          color={Colors.primary.lightGreen900}
+          onValueChange={(value: any) => onChangeCheckbox(value, index)}
+          value={item?.isSelect}
           style={styles.checkbox}
-          isChecked={item?.isSelect}
         />
         <Text style={styles.title}>{item.name}</Text>
       </HStack>
     ),
-    [listServiceDetail],
+    [data, listSelectedServiceDetail, indexSelectService],
   );
 
   const renderItemSelectedService = useCallback(
@@ -135,7 +158,7 @@ const SelectServices: React.FC<IProps> = ({t, navigation, route}) => {
         </View>
       </VStack>
     ),
-    [listSelectedServiceDetail, indexSelectService, listServiceDetail],
+    [listSelectedServiceDetail],
   );
 
   const handleBack = useCallback(() => {
@@ -143,9 +166,10 @@ const SelectServices: React.FC<IProps> = ({t, navigation, route}) => {
   }, [navigation]);
 
   const handleDone = useCallback(() => {
-    setListSelected(listSelectedServiceDetail);
+    var listCoppy = [...listSelectedServiceDetail];
+    setListSelected(listCoppy);
     navigation.goBack();
-  }, [navigation]);
+  }, [navigation, listSelectedServiceDetail]);
 
   return (
     <VStack style={styles.contenter} {...safeAreaProps}>
@@ -170,7 +194,7 @@ const SelectServices: React.FC<IProps> = ({t, navigation, route}) => {
             {/* detail service */}
             <VStack style={styles.viewListServiceDetail}>
               <ScrollView showsVerticalScrollIndicator={false}>
-                {listServiceDetail.map((item, index) =>
+                {data[indexSelectService]?.serviceDetails.map((item, index) =>
                   renderItemServiceDetail(item, index),
                 )}
               </ScrollView>
