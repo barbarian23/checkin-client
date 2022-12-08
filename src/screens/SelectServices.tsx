@@ -38,6 +38,10 @@ const SelectServices: React.FC<IProps> = ({t, navigation, route}) => {
   useQuery(['getService'], () => getService(BRANCH_CODE), {
     onSuccess: (responseData: any) => {
       console.log('success data services: ', responseData?.list);
+      if (responseData?.list === undefined) {
+        return;
+      }
+
       if (responseData?.list.length < 1) {
         return;
       }
