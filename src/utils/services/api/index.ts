@@ -8,7 +8,7 @@ import * as AsyncStorage from '@/utils/stores/AsyncStorage';
 import {BRANCH_CODE, TEN_ANT, HOST} from './Constants';
 
 const axiosClient = axios.create({
-  baseURL: 'http://' + HOST + '/api/pos/public/api-client/',
+  baseURL: 'https://' + HOST + '/api/pos/public/api-client/',
   timeout: 60000,
   headers: {
     'Content-Type': 'application/json',

@@ -173,7 +173,7 @@ const SelectServices: React.FC<IProps> = ({t, navigation, route}) => {
 
   return (
     <VStack style={styles.contenter} {...safeAreaProps}>
-      <HStack>
+      <HStack style={{alignItems: 'center'}}>
         <TouchableOpacity style={styles.touchableOpacity} onPress={handleBack}>
           <Icon name="arrow_left" />
         </TouchableOpacity>

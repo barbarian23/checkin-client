@@ -16,15 +16,15 @@ export interface IColors {
 export const Colors: IColors = {
   primary: {
     whiteGreen: '#FFFFFF',
-    lightGreen100: '#dcedc8',
-    lightGreen200: '#c5e1a5',
-    lightGreen300: '#aed581',
-    lightGreen400: '#9ccc65',
-    lightGreen500: '#8bc34a',
-    lightGreen600: '#7cb342',
-    lightGreen700: '#689f38',
-    lightGreen800: '#558b2f',
-    lightGreen900: '#33691e',
+    lightGreen100: '#f8bbd0',
+    lightGreen200: '#f48fb1',
+    lightGreen300: '#f06292',
+    lightGreen400: '#ec407a',
+    lightGreen500: '#e91e63',
+    lightGreen600: '#d81b60',
+    lightGreen700: '#c2185b',
+    lightGreen800: '#ad1457',
+    lightGreen900: '#880e4f',
   },
 };
 

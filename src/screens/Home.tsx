@@ -31,30 +31,34 @@ const Home: React.FC<IPropsHome> = ({t, navigation, route}) => {
   const [myName, setMyName] = useState(name);
   const [myBirthday, setMyBirthday] = useState(birthday);
 
-  useQuery(['getDataInfo'], () => checkPhone(phone), {
-    onSuccess: (responseData: any) => {
-      console.log('success data booking: ', responseData);
-      if (responseData?.list.length < 1) {
-        return;
-      }
-      const listServices = responseData?.list[0].bookingDetails;
-      var listServiceDetail = new Array();
-      if (listServices === undefined) {
-        return;
-      }
-      listServices.map((item: any) => {
-        listServiceDetail.push(item?.serviceDetail);
-      });
-      console.log('list dataa: ', listServiceDetail);
-      setDataBooking(listServiceDetail);
+  useQuery(
+    ['getDataInfo'],
+    () => checkPhone(phone.replace('(', '').replace(')', '').replace('-', '')),
+    {
+      onSuccess: (responseData: any) => {
+        console.log('success data booking: ', responseData);
+        if (responseData?.list.length < 1) {
+          return;
+        }
+        const listServices = responseData?.list[0].bookingDetails;
+        var listServiceDetail = new Array();
+        if (listServices === undefined) {
+          return;
+        }
+        listServices.map((item: any) => {
+          listServiceDetail.push(item?.serviceDetail);
+        });
+        console.log('list dataa: ', listServiceDetail);
+        setDataBooking(listServiceDetail);
+      },
+      onError: e => {
+        console.log('Get infor booking: ', e);
+        toast.show({
+          title: 'Phone number is not booking, please booking',
+        });
+      },
     },
-    onError: e => {
-      console.log('Get infor booking: ', e);
-      toast.show({
-        title: 'Phone number is not booking, please booking',
-      });
-    },
-  });
+  );
 
   const safeAreaProps = useSafeArea({
     safeAreaTop: true,
@@ -90,7 +94,7 @@ const Home: React.FC<IPropsHome> = ({t, navigation, route}) => {
     try {
       const res = await checkin({
         customerName: myName,
-        customerPhone: phone,
+        customerPhone: phone.replace('(', '').replace(')', '').replace('-', ''),
         dob: myBirthday,
         serviceDetailInternals: paramsService,
       });
@@ -99,13 +103,13 @@ const Home: React.FC<IPropsHome> = ({t, navigation, route}) => {
       navigation.navigate('Login');
     } catch (e) {
       console.log('Check in Error', e);
-      toast.show({title: 'Server Connect Error! Please try again!'});
+      toast.show({title: e?.data?.message});
     }
   };
 
   return (
     <VStack style={styles.contenter} {...safeAreaProps}>
-      <HStack>
+      <HStack style={{alignItems: 'center'}}>
         <TouchableOpacity style={styles.touchableOpacity} onPress={handleBack}>
           <Icon name="arrow_left" />
         </TouchableOpacity>
@@ -141,7 +145,6 @@ const Home: React.FC<IPropsHome> = ({t, navigation, route}) => {
                 value={phone}
                 // value="(817)966-6369"
                 keyboardType="phone-pad"
-                maxLength={10}
                 variant="underlined"
                 focusOutlineColor={Colors.primary.lightGreen800}
                 borderColor={Colors.primary.lightGreen800}
