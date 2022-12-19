@@ -79,8 +79,10 @@ const Login: React.FC<IPropsLogin> = ({t, navigation}) => {
         </VStack>
       </VStack>
 
-      <VStack style={styles.container}>
-        <Text style={styles.titleHeader}>{phone}</Text>
+      <VStack style={styles.container} space={10}>
+        <Text style={styles.titleHeader}>
+          {phone.length === 0 ? 'Input phone' : phone}
+        </Text>
 
         <VStack style={styles.view_content} space={5}>
           <HStack space={8}>
@@ -117,22 +119,14 @@ const Login: React.FC<IPropsLogin> = ({t, navigation}) => {
             </TouchableOpacity>
           </HStack>
           <HStack space={8} style={{justifyContent: 'center'}}>
-            <TouchableOpacity onPress={() => setPhone(phone.concat('('))}>
-              <Image source={bracket_left} />
+            <TouchableOpacity onPress={() => setPhone('')}>
+              <Icon name="ic_delete_all" />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => setPhone(phone.concat('0'))}>
               <Icon name="ic_0" />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => setPhone(phone.concat(')'))}>
-              <Image source={bracket_right} />
-            </TouchableOpacity>
-          </HStack>
-          <HStack space={8}>
-            <TouchableOpacity onPress={() => setPhone(phone.concat('-'))}>
               <Icon name="ic_dash" />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => setPhone('')}>
-              <Icon name="ic_delete_all" />
             </TouchableOpacity>
           </HStack>
         </VStack>
@@ -166,9 +160,7 @@ const styles = ScaledSheet.create({
     alignSelf: 'center',
     height: '10@vs',
   },
-  view_content: {
-    flex: 1,
-  },
+  view_content: {},
   title: {
     width: '100%',
     textAlign: 'center',
@@ -197,7 +189,7 @@ const styles = ScaledSheet.create({
     color: 'white',
     textAlign: 'center',
     fontWeight: '700',
-    fontSize: '24@s',
+    fontSize: '20@s',
   },
   view_left: {
     flex: 1,
@@ -211,9 +203,8 @@ const styles = ScaledSheet.create({
   },
   titleHeader: {
     fontWeight: '700',
-    fontSize: '24@s',
+    fontSize: '22@s',
     color: Colors.primary.lightGreen700,
-    marginBottom: '16@vs',
     textAlign: 'center',
   },
 });

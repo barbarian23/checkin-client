@@ -485,9 +485,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = JTS8MR3X84;
+				DEVELOPMENT_TEAM = 8QS98WLNS5;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = CheckinClient/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -499,9 +500,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.elife.apptest;
+				PRODUCT_BUNDLE_IDENTIFIER = com.6figures.niknailhub;
 				PRODUCT_NAME = CheckinClient;
-				PROVISIONING_PROFILE_SPECIFIER = app_test_akuvox_dev;
+				PROVISIONING_PROFILE_SPECIFIER = "Checkin Niknailhub";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 2;
@@ -515,9 +516,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = JTS8MR3X84;
+				DEVELOPMENT_TEAM = 8QS98WLNS5;
 				INFOPLIST_FILE = CheckinClient/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -528,9 +530,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.elife.apptest;
+				PRODUCT_BUNDLE_IDENTIFIER = com.6figures.niknailhub;
 				PRODUCT_NAME = CheckinClient;
-				PROVISIONING_PROFILE_SPECIFIER = app_test_akuvox_dev;
+				PROVISIONING_PROFILE_SPECIFIER = "Checkin Niknailhub";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 2;
 				VERSIONING_SYSTEM = "apple-generic";
