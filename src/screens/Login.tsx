@@ -125,7 +125,7 @@ const Login: React.FC<IPropsLogin> = ({t, navigation}) => {
             <TouchableOpacity onPress={() => setPhone(phone.concat('0'))}>
               <Icon name="ic_0" />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => setPhone(phone.concat(')'))}>
+            <TouchableOpacity onPress={() => setPhone(phone.slice(0, -1))}>
               <Icon name="ic_dash" />
             </TouchableOpacity>
           </HStack>
