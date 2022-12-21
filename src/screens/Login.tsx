@@ -64,8 +64,6 @@ const Login: React.FC<IPropsLogin> = ({t, navigation}) => {
 
   const sourceImgBg = require('@/assets/images/bg_login.jpg');
   const sourceLogo = require('@/assets/images/logo.jpg');
-  const bracket_left = require('@/assets/images/ic_bracket_(.png');
-  const bracket_right = require('@/assets/images/ic_bracket_).png');
 
   return (
     <HStack style={{flex: 1}}>
@@ -76,16 +74,22 @@ const Login: React.FC<IPropsLogin> = ({t, navigation}) => {
           alt="Alternate Text"
           size="2xl"
         />
-
-        <VStack>
+        <VStack style={{flex: 1, alignItems: 'center'}}>
           <Text style={styles.title}>Welcome to</Text>
-          <Text style={styles.title}>6FigurePOS</Text>
+          <Text style={styles.title}>Texas Nail Bar</Text>
         </VStack>
       </VStack>
 
       <VStack style={styles.container} space={10}>
         <Text style={styles.titleHeader}>
-          {phone.length === 0 ? 'Input phone' : phone}
+          {phone.length === 0
+            ? 'Input phone'
+            : '(' +
+              phone.slice(0, 3) +
+              ') ' +
+              phone.slice(3, 6) +
+              '-' +
+              phone.slice(6)}
         </Text>
 
         <VStack style={styles.view_content} space={5}>

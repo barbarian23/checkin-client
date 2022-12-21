@@ -1,6 +1,11 @@
-// Product
-export const BRANCH_CODE = '2e111519-358d-442f-93fd-159cd4e7d5d7';
-export const TEN_ANT = 'NIKNAILHUB';
+// Product VN
+// export const BRANCH_CODE = '2e111519-358d-442f-93fd-159cd4e7d5d7';
+// export const TEN_ANT = 'NIKNAILHUB';
+// export const HOST = 'server.6figurespos.com';
+
+// Product My
+export const BRANCH_CODE = '3abe1bf2-3b51-4cb3-b034-000f3b43b9e6';
+export const TEN_ANT = 'TEXASNAILSBAR';
 export const HOST = 'server.6figurespos.com';
 
 // DEV
