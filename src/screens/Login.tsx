@@ -7,6 +7,7 @@ import {useQuery} from 'react-query';
 import Colors from '@/themes/Colors';
 import {checkIsPhone} from '@/utils/services/api/myAPI';
 import {Icon} from '@/components/common';
+import Loading from '@/components/layouts/Loading';
 
 type IPropsLogin = {
   navigation: any;
@@ -16,6 +17,7 @@ const Login: React.FC<IPropsLogin> = ({t, navigation}) => {
   const [phone, setPhone] = useState('');
   const [enabledAPIIsPhone, setEnabledAPIIsPhone] = useState(false);
   const toast = useToast();
+  const [isLoading, setIsLoading] = useState(false);
 
   useQuery(
     ['checkIsPhone'],
@@ -24,6 +26,7 @@ const Login: React.FC<IPropsLogin> = ({t, navigation}) => {
     {
       enabled: enabledAPIIsPhone,
       onSuccess: (responseData: any) => {
+        setIsLoading(false);
         if (responseData === null) {
           toast.show({title: 'Please enter customer information!'});
           navigation.navigate('Home', {
@@ -43,6 +46,7 @@ const Login: React.FC<IPropsLogin> = ({t, navigation}) => {
         setEnabledAPIIsPhone(false);
       },
       onError: e => {
+        setIsLoading(false);
         console.log('Check Phone Error: ', e);
         setEnabledAPIIsPhone(false);
         toast.show({title: 'Connect Error!!'});
@@ -133,6 +137,7 @@ const Login: React.FC<IPropsLogin> = ({t, navigation}) => {
         <Button style={styles.button} onPress={handleCheckin}>
           <Text style={styles.text_button}>{t('btn_check')}</Text>
         </Button>
+        <Loading show={isLoading} />
       </VStack>
     </HStack>
   );

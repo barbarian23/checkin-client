@@ -16,6 +16,7 @@ import Icon from '@/components/common/Icon';
 import {TouchableOpacity, Text} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {getService} from '@/utils/services/api/myAPI';
+import Loading from '@/components/layouts/Loading';
 import {useQuery} from 'react-query';
 import {BRANCH_CODE} from '@/utils/services/api/Constants';
 
@@ -30,6 +31,7 @@ const SelectServices: React.FC<IProps> = ({t, navigation, route}) => {
   const toast = useToast();
   console.log('data book Services: ', listSelected);
   const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [indexSelectService, setIndexSelectService] = useState(0);
   const [listSelectedServiceDetail, setListSelectedServiceDetail] = useState([
     ...listSelected,
@@ -37,6 +39,7 @@ const SelectServices: React.FC<IProps> = ({t, navigation, route}) => {
 
   useQuery(['getService'], () => getService(BRANCH_CODE), {
     onSuccess: (responseData: any) => {
+      setIsLoading(false);
       console.log('success data services: ', responseData?.list);
       if (responseData?.list === undefined) {
         return;
@@ -65,6 +68,7 @@ const SelectServices: React.FC<IProps> = ({t, navigation, route}) => {
       setData(listServiceCoppy);
     },
     onError: e => {
+      setIsLoading(false);
       console.log('Get list services error: ', e);
       toast.show({
         title: 'Server Connect Error! Please try again!',
@@ -222,6 +226,7 @@ const SelectServices: React.FC<IProps> = ({t, navigation, route}) => {
       <Button style={styles.button} onPress={handleDone}>
         <Text style={styles.text_button}>Done</Text>
       </Button>
+      <Loading show={isLoading} />
     </VStack>
   );
 };
