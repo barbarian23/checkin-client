@@ -6,9 +6,10 @@ import _ from 'lodash';
 import {queryClient} from '@/App';
 import * as AsyncStorage from '@/utils/stores/AsyncStorage';
 import {BRANCH_CODE, TEN_ANT, HOST} from './Constants';
+import {PATH} from '@/utils/services/api/Constants';
 
 const axiosClient = axios.create({
-  baseURL: 'https://' + HOST + '/api/pos/public/api-client/',
+  baseURL: 'https://' + HOST + PATH,
   timeout: 60000,
   headers: {
     'Content-Type': 'application/json',
