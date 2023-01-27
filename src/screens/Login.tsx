@@ -1,13 +1,14 @@
 import {VStack, Button, useToast, Image, HStack} from 'native-base';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {withTranslation} from 'react-i18next';
 import {ScaledSheet} from 'react-native-size-matters';
-import {ImageBackground, Text, TouchableOpacity} from 'react-native';
+import {Text, TouchableOpacity} from 'react-native';
 import {useQuery} from 'react-query';
 import Colors from '@/themes/Colors';
 import {checkIsPhone} from '@/utils/services/api/myAPI';
 import {Icon} from '@/components/common';
 import Loading from '@/components/layouts/Loading';
+import {NAME} from '@/utils/services/api/Constants';
 
 type IPropsLogin = {
   navigation: any;
@@ -76,7 +77,7 @@ const Login: React.FC<IPropsLogin> = ({t, navigation}) => {
         />
         <VStack style={{flex: 1, alignItems: 'center'}}>
           <Text style={styles.title}>Welcome to</Text>
-          <Text style={styles.title}>Texas Nail Bar</Text>
+          <Text style={styles.title}>{NAME}</Text>
         </VStack>
       </VStack>
 
@@ -174,7 +175,7 @@ const styles = ScaledSheet.create({
     width: '100%',
     textAlign: 'center',
     fontWeight: '700',
-    fontSize: '40@s',
+    fontSize: '26@s',
     color: Colors.primary.lightGreen700,
   },
   input: {
